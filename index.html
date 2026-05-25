@@ -951,7 +951,7 @@ function handleSubmitZh(e) {
   e.preventDefault();
   const form = document.getElementById('reg-form-zh');
   const data = new FormData(form);
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpt8dwtTYwUnHwlTpyIjb1Rau_Y_5AEtDAPMvhmTcszQOIpXZqCQRGG4-eLb-BbwSP5Q/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxioQinKyP96eqE2Pj3T1Pu_pFSuE3LuPfGjQa_bmDRgX4whlLEIaN4u_EsR3g5BidHzw/exec';
   const payload = { timestamp: new Date().toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur' }), lang: 'zh' };
   data.forEach((v, k) => payload[k] = v);
   fetch(APPS_SCRIPT_URL, {
@@ -969,7 +969,7 @@ function handleSubmit(e) {
   e.preventDefault();
   const form = document.getElementById('reg-form');
   const data = new FormData(form);
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpt8dwtTYwUnHwlTpyIjb1Rau_Y_5AEtDAPMvhmTcszQOIpXZqCQRGG4-eLb-BbwSP5Q/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxioQinKyP96eqE2Pj3T1Pu_pFSuE3LuPfGjQa_bmDRgX4whlLEIaN4u_EsR3g5BidHzw/exec';
   const payload = { timestamp: new Date().toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur' }) };
   data.forEach((v, k) => payload[k] = v);
   fetch(APPS_SCRIPT_URL, {
