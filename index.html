@@ -97,6 +97,9 @@ section{position:relative;z-index:1;}
 .price-card.tier2{background:rgba(232,220,200,.04);border-color:var(--bdr);}
 .price-card.tier3{background:rgba(200,169,110,.08);border-color:var(--bdg);}
 .best-tag{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--green);color:#0e0d0b;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 12px;border-radius:20px;white-space:nowrap;}
+.price-card.sold-out{opacity:.45;filter:grayscale(.65);}
+.price-card.sold-out .best-tag{display:none;}
+.price-card.sold-out::after{content:"SOLD OUT";position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#8a8a8a;color:#0e0d0b;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 12px;border-radius:20px;white-space:nowrap;}
 .price-seats{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
 .tier1 .price-seats{color:var(--green-l);}
 .tier2 .price-seats{color:var(--cd);}
@@ -1737,6 +1740,44 @@ HgZp1SpKpACha/rt+e18DLTTYCi6nWBDpt10hFSMbbdvp+n4duBWJFI/wB/x39uBJZI9VF4fb19j9M99
 var DATA = {};
 var SCRIPT = 'https://script.google.com/macros/s/AKfycbyRmOMbgAIOpbB3ab-eGL6NRiCfmGI1WOPpkIFuht_K3eHTozd7JHKYaPLpnNcHZfAcvw/exec';
 
+function applyTierAvailability(counts) {
+  counts = counts || {};
+  var rm29 = counts.RM29 || 0;
+  var rm39 = counts.RM39 || 0;
+  var tier1SoldOut = rm29 >= 10;
+  var tier2SoldOut = (rm29 + rm39) >= 30;
+
+  document.querySelectorAll('.price-card.tier1').forEach(function(el) {
+    el.classList.toggle('sold-out', tier1SoldOut);
+  });
+  document.querySelectorAll('.price-card.tier2').forEach(function(el) {
+    el.classList.toggle('sold-out', tier2SoldOut);
+  });
+
+  ['en-tier', 'zh-tier'].forEach(function(id) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    Array.prototype.forEach.call(sel.options, function(opt) {
+      if (opt.value === 'RM29' && tier1SoldOut) {
+        opt.disabled = true;
+        if (!/SOLD OUT/.test(opt.textContent)) opt.textContent += ' — SOLD OUT';
+      }
+      if (opt.value === 'RM39' && tier2SoldOut) {
+        opt.disabled = true;
+        if (!/SOLD OUT/.test(opt.textContent)) opt.textContent += ' — SOLD OUT';
+      }
+    });
+    if (sel.selectedOptions[0] && sel.selectedOptions[0].disabled) sel.value = '';
+  });
+}
+
+function loadTierAvailability() {
+  fetch(SCRIPT)
+    .then(function(r) { return r.json(); })
+    .then(function(json) { applyTierAvailability(json.counts); })
+    .catch(function() {});
+}
+
 function setLang(lang) {
   document.getElementById('site-en').style.display = (lang === 'en') ? 'block' : 'none';
   document.getElementById('site-zh').style.display = (lang === 'zh') ? 'block' : 'none';
@@ -1746,6 +1787,7 @@ function setLang(lang) {
 }
 window.addEventListener('load', function() {
   setLang(localStorage.getItem('siteLang') || 'en');
+  loadTierAvailability();
 });
 
 function showStep(lang, n) {
